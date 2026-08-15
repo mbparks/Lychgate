@@ -1,0 +1,9 @@
+<!-- LYCHGATE :: icon-512.svg :: v5.3.0
+Asset provenance: original hand-authored SVG for LYCHGATE.
+License: GPL-3.0.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#15120f"/>
+  <path d="M70 425h372M128 425V230c0-91 53-155 128-155s128 64 128 155v195M179 425V240c0-53 32-93 77-93s77 40 77 93v185M104 219h304M256 75v350" fill="none" stroke="#efe4cc" stroke-width="21" stroke-linecap="square"/>
+  <circle cx="256" cy="259" r="19" fill="#d87837"/>
+</svg>

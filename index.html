@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!-- LYCHGATE :: index.html :: v5.3.0 -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0c0b09">
+  <meta name="description" content="LYCHGATE, an offline supernatural field practice and territory game.">
+  <title>LYCHGATE v5.3.0</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/lychgate.css">
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Skip to field station</a>
+  <div id="appShell" class="app-shell">
+    <header class="topbar">
+      <button id="menuToggle" class="icon-button" type="button" aria-label="Toggle stations" aria-expanded="true">☰</button>
+      <div class="brand-lockup" aria-label="LYCHGATE">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M10 54h44M18 54V29c0-11 6-19 14-19s14 8 14 19v25M24 54V30c0-6 3-11 8-11s8 5 8 11v24M15 28h34M32 10v44"/></svg>
+        <div><div class="eyebrow">FIELD PRACTICE</div><div class="brand-name">LYCHGATE</div></div>
+      </div>
+      <div class="top-status" aria-live="polite">
+        <span id="positionBadge" class="status-chip">POSITION: NONE</span>
+        <span id="saveBadge" class="status-chip saved">SAVED</span>
+        <span class="version-chip">v<span data-app-version>5.3.0</span></span>
+      </div>
+    </header>
+
+    <aside id="stationRail" class="station-rail" aria-label="Stations">
+      <nav class="station-nav">
+        <div class="station-group"><span class="station-group-label">Field work</span>
+          <button type="button" class="station-button active" data-station="field" aria-current="page"><span class="station-glyph">01</span><span>Field</span></button>
+          <button type="button" class="station-button" data-station="threshold"><span class="station-glyph">02</span><span>Threshold</span></button>
+          <button type="button" class="station-button" data-station="satchel"><span class="station-glyph">03</span><span>Satchel</span></button>
+          <button type="button" class="station-button" data-station="ledger"><span class="station-glyph">04</span><span>Ledger</span></button>
+          <button type="button" class="station-button" data-station="rites"><span class="station-glyph">05</span><span>Rites</span></button>
+          <button type="button" class="station-button" data-station="expeditions"><span class="station-glyph">06</span><span>Expeditions</span></button>
+        </div>
+        <div class="station-group"><span class="station-group-label">Authoring</span>
+          <button type="button" class="station-button" data-station="surveyor"><span class="station-glyph">07</span><span>Surveyor</span></button>
+          <button type="button" class="station-button" data-station="scenarios"><span class="station-glyph">08</span><span>Scenarios</span></button>
+        </div>
+        <div class="station-group"><span class="station-group-label">System</span>
+          <button type="button" class="station-button" data-station="cabinet"><span class="station-glyph">09</span><span>Cabinet</span></button>
+          <button type="button" class="station-button" data-station="about"><span class="station-glyph">10</span><span>About</span></button>
+        </div>
+      </nav>
+      <div class="rail-footer">
+        <button id="muteToggle" type="button" class="quiet-button" aria-pressed="false">Sound on</button>
+        <button id="ambienceToggle" type="button" class="quiet-button" aria-pressed="false">Ambience off</button>
+        <button id="highContrastToggle" type="button" class="quiet-button" aria-pressed="false">High contrast</button>
+      </div>
+    </aside>
+
+    <main id="mainContent" class="main-content" tabindex="-1">
+      <section class="station-panel active" data-panel="field" aria-labelledby="fieldTitle">
+        <div class="station-heading">
+          <div><div class="eyebrow">STATION 01</div><h1 id="fieldTitle">Field</h1><p>Walk the parish. Find what thins. Work only where you may safely stand.</p></div>
+          <div class="field-readout"><div><span class="label">Aether</span><strong id="aetherReadout">0</strong></div><div><span class="label">Degree</span><strong id="degreeReadout">1</strong></div></div>
+        </div>
+
+        <div id="safetyBanner" class="safety-banner" hidden><strong>INTERACTION LOCKED</strong><span id="safetyMessage">Movement or location rules prevent interaction.</span></div>
+
+        <section id="encounterNotice" class="encounter-notice instrument-card" hidden aria-live="polite">
+          <div><span class="eyebrow">FIELD ENCOUNTER</span><h2 id="encounterTitle">Tolling</h2><p id="encounterText"></p><p id="encounterReading" class="encounter-reading"></p><p id="encounterMeta" class="microcopy"></p></div>
+          <button id="dismissEncounterButton" type="button">Close field notice</button>
+        </section>
+
+        <div class="field-grid">
+          <section class="instrument-card map-card" aria-label="Field instrument map">
+            <div class="card-header compact">
+              <div><span class="eyebrow">LOCAL SURVEY</span><h2 id="mapModeTitle">Parish survey</h2></div>
+              <div class="map-header-actions">
+                <button id="walkModeButton" type="button" class="compact-button" aria-pressed="false">Walk mode</button>
+                <div class="segmented" role="group" aria-label="Map mode"><button id="surveyModeButton" type="button" class="segment active">Survey</button><button id="dowsingModeButton" type="button" class="segment">Dowsing</button></div>
+              </div>
+            </div>
+            <div id="mapWrap" class="map-wrap">
+              <canvas id="fieldCanvas" width="1200" height="800" tabindex="0" aria-label="Local vector field map. Drag to pan, use wheel or pinch to zoom, or use arrow keys to nudge a manual position."></canvas>
+              <div class="map-compass" aria-hidden="true"><span>N</span><i></i></div>
+              <div class="map-toolbar" aria-label="Map controls"><button id="zoomInButton" type="button" aria-label="Zoom in">+</button><button id="zoomOutButton" type="button" aria-label="Zoom out">−</button><button id="resetViewButton" type="button" aria-label="Reset map view">⌖</button></div>
+              <div class="map-scale" id="mapScale">500 m</div>
+              <div id="mapEmpty" class="map-empty" hidden><strong>DOWSING VIEW</strong><span>No survey geometry is loaded. Bearing and range remain playable.</span></div>
+            </div>
+            <div class="map-footer"><span id="fixReadout">No fix</span><span id="speedReadout">Speed: 0.0 km/h</span><span id="nearestReadout">No threshold selected</span></div>
+          </section>
+
+          <aside class="instrument-card field-controls" aria-label="Position controls">
+            <div class="card-header compact"><div><span class="eyebrow">POSITION SOURCE</span><h2>Fix</h2></div></div>
+            <div class="source-tabs" role="tablist" aria-label="Position source"><button type="button" role="tab" class="source-tab active" data-position-source="manual" aria-selected="true">Manual</button><button type="button" role="tab" class="source-tab" data-position-source="live" aria-selected="false">Live</button><button type="button" role="tab" class="source-tab" data-position-source="track" aria-selected="false">Track</button></div>
+            <div class="source-panel active" data-source-panel="manual">
+              <label>Latitude<input id="manualLat" type="number" step="0.000001" inputmode="decimal"></label>
+              <label>Longitude<input id="manualLon" type="number" step="0.000001" inputmode="decimal"></label>
+              <label>Maidenhead grid<input id="maidenheadInput" type="text" autocomplete="off" placeholder="FM09"></label>
+              <div class="button-row"><button id="applyManualFix" type="button" class="primary-button">Set manual fix</button><button id="applyMaidenhead" type="button">Use grid</button></div>
+              <p class="microcopy">Click the survey to set a manual fix. Arrow keys nudge 5 m. Hold Shift for 25 m.</p>
+            </div>
+            <div class="source-panel" data-source-panel="live" hidden>
+              <p id="liveStatus">Live geolocation has not been requested.</p>
+              <div class="button-row"><button id="startLiveFix" type="button" class="primary-button">Start live fix</button><button id="stopLiveFix" type="button">Stop</button></div>
+              <dl class="mini-stats"><div><dt>Accuracy</dt><dd id="accuracyReadout">Unknown</dd></div><div><dt>Heading</dt><dd id="headingReadout">Unknown</dd></div></dl>
+            </div>
+            <div class="source-panel" data-source-panel="track" hidden>
+              <label>Track file<input id="trackFile" type="file" accept=".gpx,.geojson,.json,application/geo+json,application/gpx+xml"></label>
+              <label>Playback speed<select id="trackSpeed"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option><option value="4">4x</option><option value="8">8x</option></select></label>
+              <div class="button-row"><button id="trackPlayPause" type="button" class="primary-button">Play track</button><button id="trackReset" type="button">Reset</button></div><p id="trackStatus" class="microcopy">No track loaded.</p>
+            </div>
+            <hr>
+            <div class="stacked-actions"><button id="setHomeButton" type="button">Set home at current fix</button><button id="goHomeButton" type="button" class="go-home">Go home</button><button id="bearingCueButton" type="button">Bearing cue</button><button id="centerMapButton" type="button">Center on fix</button></div>
+            <div id="homeReadout" class="home-readout">Home is not set.</div>
+          </aside>
+        </div>
+
+        <section class="instrument-card nearby-card" aria-labelledby="nearbyTitle">
+          <div class="card-header compact"><div><span class="eyebrow">WITHIN THE RING</span><h2 id="nearbyTitle">Nearby thresholds</h2></div><label class="compact-select">Range<select id="rangeSelect"><option value="500">500 m</option><option value="1000" selected>1 km</option><option value="2500">2.5 km</option><option value="5000">5 km</option></select></label></div>
+          <div id="nearbyList" class="threshold-list" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="station-panel" data-panel="threshold" aria-labelledby="thresholdTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 02</div><h1 id="thresholdTitle">Threshold</h1><p>The complete working record for the selected place.</p></div></div>
+        <div id="thresholdEmpty" class="empty-state">Choose a threshold from Field to open its working panel.</div>
+        <div id="thresholdWorkspace" hidden>
+          <div class="threshold-hero instrument-card">
+            <div><span id="thresholdType" class="eyebrow">THRESHOLD</span><h2 id="thresholdName">Unnamed threshold</h2><p id="thresholdCoordinates"></p><p id="thresholdProvenance" class="microcopy"></p></div>
+            <div class="threshold-state"><span id="thresholdStateBadge" class="state-badge">DORMANT</span><span id="thresholdFactionBadge" class="faction-badge neutral">UNWORKED</span><strong id="thresholdDistance">0 m</strong></div>
+          </div>
+          <section class="instrument-card affinity-card"><div><span class="eyebrow">PLACE AFFINITY</span><strong id="thresholdAffinity">Unclassified ground</strong></div><p id="thresholdEffect"></p></section>
+          <section class="instrument-card lore-card">
+            <div class="card-header compact"><div><span class="eyebrow">GENERATED FIELD TRADITION</span><h2 id="thresholdLoreEpithet">County record</h2></div><span class="lore-fiction">FICTION, NOT HISTORICAL EVIDENCE</span></div>
+            <div class="lore-grid"><div><span class="label">Fragment</span><strong id="thresholdLoreDate"></strong></div><div><span class="label">Witness</span><strong id="thresholdLoreWitness"></strong></div><div><span class="label">Reference</span><strong id="thresholdLoreReference"></strong></div></div>
+            <p id="thresholdLorePhenomenon" class="lore-lead"></p><p id="thresholdLoreContradiction" class="microcopy"></p><div class="two-column lore-readings"><div><span class="eyebrow">KINDLED READING</span><p id="thresholdLoreKindled"></p></div><div><span class="eyebrow">SEXTON READING</span><p id="thresholdLoreSextons"></p></div></div><p id="thresholdLoreWarning" class="lore-warning"></p>
+          </section>
+          <div class="three-column">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">PETITION</span><h2>Ask the place</h2></div></div><p>Gather aether, sometimes receive a relic, and record that you stood within reach.</p><button id="petitionButton" type="button" class="primary-button">Petition threshold</button><p id="petitionResult" class="result-line"></p></section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">VIGILS</span><h2>Eight lights</h2></div></div><div id="vigilCompass" class="vigil-compass" aria-label="Eight vigil positions"></div><button id="setVigilButton" type="button">Set or tend next vigil</button></section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">DEFENSE</span><h2>Bell, book, candle</h2></div></div><div class="rite-buttons"><button type="button" data-offense="bell">Ring bell</button><button type="button" data-offense="book">Open book</button><button type="button" data-offense="candle">Snuff candle</button></div><p id="offenseResult" class="result-line"></p></section>
+          </div>
+          <div class="two-column">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">SIGIL</span><h2>Trace from memory</h2></div></div><p>Sigils vary by family and difficulty. Shape is tolerant, stroke order and direction matter.</p><button id="openSigilButton" type="button" class="primary-button">Begin sigil</button><p id="sigilBest">No score recorded here.</p><div id="thresholdSigilHistory" class="mini-history"></div></section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">LEY LINE</span><h2>Join held ground</h2></div></div><label>Destination threshold<select id="linkTargetSelect"></select></label><div id="linkSurvey" class="link-survey" aria-live="polite"></div><button id="createLinkButton" type="button">Draw ley line</button><p id="linkResult" class="result-line"></p><div id="thresholdConnections" class="mini-history"></div></section>
+          </div>
+          <section class="instrument-card threshold-rites-card"><div class="card-header compact"><div><span class="eyebrow">WORKING RITES</span><h2>Practice at this Threshold</h2></div><span id="thresholdRiteOrder" class="microcopy"></span></div><div id="thresholdRiteList" class="rite-catalog compact-rites"></div><div id="thresholdRiteEffects" class="tag-cloud rite-effects"></div><p id="riteResult" class="result-line"></p></section>
+          <div class="two-column">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">OBSERVATIONS</span><h2>Field notes</h2></div></div><label>New observation<textarea id="thresholdNoteInput" rows="4" maxlength="1200" placeholder="Record only what you observed or inferred."></textarea></label><button id="addThresholdNoteButton" type="button">Add observation</button><div id="thresholdNotes" class="ledger-list"></div></section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">PHOTOGRAPHS</span><h2>Local attachments</h2></div></div><label class="file-button">Attach photograph<input id="thresholdPhotoInput" type="file" accept="image/*"></label><p class="microcopy">Stored only inside this browser save. Maximum 1.5 MB per photograph.</p><div id="thresholdPhotos" class="photo-grid"></div></section>
+          </div>
+          <div class="two-column">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">HISTORY</span><h2>Threshold record</h2></div></div><div id="thresholdHistory" class="ledger-list"></div></section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">OWNERSHIP</span><h2>Control timeline</h2></div></div><div id="ownershipTimeline" class="timeline"></div></section>
+          </div>
+        </div>
+      </section>
+
+      <section class="station-panel" data-panel="satchel" aria-labelledby="satchelTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 03</div><h1 id="satchelTitle">Satchel</h1><p>Relics, materials, and the small proofs carried home.</p></div></div>
+        <div class="inventory-grid"><section class="instrument-card inventory-hero"><span class="eyebrow">CURRENT AETHER</span><strong id="satchelAether">0</strong><span>units gathered</span></section><section class="instrument-card"><span class="eyebrow">SALT</span><strong id="saltCount">0</strong><span>lines</span></section><section class="instrument-card"><span class="eyebrow">IRON</span><strong id="ironCount">0</strong><span>pieces</span></section><section class="instrument-card"><span class="eyebrow">COLD ASH</span><strong id="ashCount">0</strong><span>packets</span></section></div>
+        <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">RELIC REGISTER</span><h2>Proofs of standing</h2></div><label class="compact-label">Sort<select id="relicSortSelect"><option value="found">Newest</option><option value="rarity">Rarity</option><option value="resonance">Resonance</option><option value="attunement">Attunement</option></select></label></div><p class="microcopy">Relics can be attuned at their originating Threshold or transferred through Passage Stone 2.0. Preparing a transfer archives and removes the active local Relic. The v3.0 integrity stamp detects alteration but does not prove player identity.</p><div id="relicList" class="relic-list"></div></section>
+      </section>
+
+      <section class="station-panel" data-panel="ledger" aria-labelledby="ledgerTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 04</div><h1 id="ledgerTitle">Ledger</h1><p>Held ground and the field journal carried home.</p></div><div class="segmented" role="group" aria-label="Ledger view"><button id="ledgerGroundButton" class="segment active" type="button">Ground</button><button id="ledgerJournalButton" class="segment" type="button">Journal</button></div></div>
+        <div id="ledgerGroundView">
+          <div class="ledger-summary"><section class="instrument-card"><span class="eyebrow">HELD</span><strong id="heldCount">0</strong><span>thresholds</span></section><section class="instrument-card"><span class="eyebrow">LINES</span><strong id="lineCount">0</strong><span>ley lines</span></section><section class="instrument-card"><span class="eyebrow">SHROUDS</span><strong id="shroudCount">0</strong><span>active fields</span></section><section class="instrument-card"><span class="eyebrow">GROUND</span><strong id="groundScore">0</strong><span>score</span></section><section class="instrument-card"><span class="eyebrow">KINDLED AREA</span><strong id="kindledGroundArea">0</strong><span>held</span></section><section class="instrument-card"><span class="eyebrow">SEXTON AREA</span><strong id="sextonGroundArea">0</strong><span>held</span></section></div>
+          <section class="instrument-card ground-status"><div><span class="eyebrow">GROUND DOMINANCE</span><h2 id="groundDominance">Balanced</h2><p id="groundDominanceDetail" class="microcopy"></p></div><div class="ground-harvest"><strong id="groundProductionReadout">0 Aether ready</strong><button id="collectGroundAetherButton" type="button">Collect held-ground Aether</button></div></section>
+          <div class="two-column"><section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">LEY LINES</span><h2>Joined ground</h2></div><span class="microcopy">Range, crossing, decay, reinforcement</span></div><div id="lineList" class="ledger-list"></div></section><section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">SHROUDS</span><h2>Enclosed ground</h2></div><span class="microcopy">Area, nesting, overlap, yield</span></div><div id="shroudList" class="ledger-list"></div></section></div>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">COLLAPSE REGISTER</span><h2>Ground no longer held</h2></div></div><div id="shroudCollapseList" class="ledger-list"></div></section>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">SESSION RECORD</span><h2>Running actions</h2></div><button id="printReportButton" type="button">Prepare field report</button></div><div id="sessionLog" class="session-log"></div></section>
+        </div>
+        <div id="ledgerJournalView" hidden>
+          <div class="journal-masthead instrument-card"><div><span class="eyebrow">FIELD JOURNAL</span><h2 id="journalNumber">No. 0001</h2><p id="journalMeta"></p></div><button id="printJournalButton" type="button" class="primary-button">Prepare journal sheet</button></div>
+          <div id="journalStats" class="journal-stats"></div>
+          <div class="two-column">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">MARGINALIA</span><h2>Session notes</h2></div></div><label>Journal note<textarea id="journalNoteInput" rows="5" maxlength="1200" placeholder="Weather, route, observation, uncertainty, or anything worth carrying forward."></textarea></label><button id="addJournalNoteButton" type="button">Add to journal</button><div id="journalNotes" class="ledger-list"></div></section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">PAST BOOKS</span><h2>Archived sessions</h2></div></div><div id="pastJournals" class="ledger-list"></div></section>
+          </div>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ENCOUNTER REGISTER</span><h2>Things noticed on the way</h2></div></div><p class="microcopy">Encounter text is generated game fiction. Simulated positions remain labeled in the record.</p><div id="encounterHistory" class="ledger-list"></div></section>
+        </div>
+      </section>
+
+      <section class="station-panel" data-panel="rites" aria-labelledby="ritesTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 05</div><h1 id="ritesTitle">Rites</h1><p>Degrees of Sight are earned by practice, not by purchase.</p></div></div>
+        <section class="instrument-card"><div class="degree-track" id="degreeTrack"></div><div class="rite-progress"><div><span class="eyebrow">CURRENT DEGREE</span><strong id="currentDegree">1</strong></div><div><span class="eyebrow">PRACTICE SCORE</span><strong id="practiceScore">0</strong></div><button id="advanceDegreeButton" type="button" class="primary-button">Attempt advancement rite</button></div><p id="degreeRequirement"></p></section>
+        <div class="two-column">
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ORDER</span><h2 id="factionHeading">Choose an order</h2></div></div><div id="factionChoice" class="faction-choice"><button type="button" class="faction-card kindled" data-faction="kindled"><strong>The Kindled</strong><span>The dead are owed passage. Open. Light.</span></button><button type="button" class="faction-card sextons" data-faction="sextons"><strong>The Sextons</strong><span>A thin place harms the living. Close. Keep the ledger.</span></button></div><div id="factionCurrent" hidden><p id="factionCopy"></p><button id="defectButton" type="button" class="danger-button">Defect once</button><p id="defectWarning" class="microcopy"></p></div></section>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">SIGIL PRACTICE</span><h2>Study the marks</h2></div></div><label>Difficulty<select id="sigilDifficultySelect"><option value="auto">Match Degree</option><option value="1">I</option><option value="2">II</option><option value="3">III</option><option value="4">IV</option><option value="5">V</option></select></label><label class="toggle-row"><input id="sigilAssistToggle" type="checkbox"> Extended exposure for accessibility</label><button id="practiceSigilButton" type="button" class="primary-button">Practice a sigil</button><p class="microcopy">Practice scores enter the sigil journal but do not award aether or Degree progress.</p><div id="sigilJournal" class="ledger-list"></div></section>
+        </div>
+        <div class="two-column rites-workbench">
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">PRACTICE CATALOG</span><h2>Rites available to your order</h2></div></div><p id="riteTargetSummary" class="microcopy">Select a Threshold in Field to work a rite.</p><p id="riteStationResult" class="result-line"></p><div id="riteCatalog" class="rite-catalog"></div></section>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">RITE REGISTER</span><h2>Worked practices</h2></div></div><div id="riteHistory" class="ledger-list"></div></section>
+        </div>
+      </section>
+
+
+      <section class="station-panel" data-panel="expeditions" aria-labelledby="expeditionsTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 06</div><h1 id="expeditionsTitle">Expeditions</h1><p>Plan the walk, carry only what matters, then replay the field record.</p></div><div class="segmented" role="group" aria-label="Expedition view"><button id="expeditionPlanButton" class="segment active" type="button">Plan</button><button id="expeditionReplayButton" class="segment" type="button">Replay</button></div></div>
+        <div id="expeditionPlanView">
+          <div class="expedition-summary">
+            <section class="instrument-card"><span class="eyebrow">STATUS</span><strong id="expeditionStatus">NO PLAN</strong><span id="expeditionStatusDetail">Create an Expedition to begin.</span></section>
+            <section class="instrument-card"><span class="eyebrow">PLANNED DISTANCE</span><strong id="expeditionDistance">0 m</strong><span id="expeditionRouteCount">0 route points</span></section>
+            <section class="instrument-card"><span class="eyebrow">CHECKPOINTS</span><strong id="expeditionCheckpointCount">0 / 0</strong><span>reached</span></section>
+            <section class="instrument-card"><span class="eyebrow">UNKNOWN CELLS</span><strong id="expeditionUnknownCount">0</strong><span>unwalked geohash cells</span></section>
+          </div>
+          <div class="two-column expedition-grid">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">FIELD PLAN</span><h2 id="expeditionEditorHeading">New Expedition</h2></div></div>
+              <label>Title<input id="expeditionTitleInput" type="text" maxlength="120" placeholder="Western ridge walk"></label>
+              <label>Purpose<textarea id="expeditionPurposeInput" rows="3" maxlength="1200" placeholder="What are you going out to learn or work?"></textarea></label>
+              <div class="two-column tight"><label>Estimated minutes<input id="expeditionMinutesInput" type="number" min="0" max="1440" step="5" value="60"></label><label>Companions<input id="expeditionCompanionsInput" type="text" maxlength="500" placeholder="Names or call signs, comma separated"></label></div>
+              <label>Safety and access note<textarea id="expeditionSafetyInput" rows="4" maxlength="1600" placeholder="Public access, daylight, weather, road crossings, return plan."></textarea></label>
+              <div class="artifact-actions"><button id="createExpeditionButton" type="button" class="primary-button">Create from current fix</button><button id="saveExpeditionPlanButton" type="button" disabled>Save plan</button></div>
+              <p class="microcopy">The current fix becomes the start point. Home is used as the return point when available, otherwise the current fix is used. Safety notes are required before READY.</p>
+            </section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">OBJECTIVES</span><h2>Targets and practice</h2></div></div>
+              <label>Known Thresholds<select id="expeditionThresholdSelect" multiple size="6" aria-label="Target Thresholds"></select></label>
+              <label>Required Relics<select id="expeditionRelicSelect" multiple size="5" aria-label="Required Relics"></select></label>
+              <label>Planned Rites<select id="expeditionRiteSelect" multiple size="6" aria-label="Planned Rites"></select></label>
+              <button id="saveExpeditionObjectivesButton" type="button" disabled>Save objectives</button>
+            </section>
+          </div>
+          <div class="two-column expedition-grid">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ROUTE</span><h2>Points and checkpoints</h2></div><span id="expeditionReturnReadout" class="tag">RETURN UNSET</span></div>
+              <div class="artifact-actions"><button id="addExpeditionRoutePointButton" type="button" disabled>Add current fix to route</button><button id="setExpeditionReturnButton" type="button" disabled>Set return to current fix</button><button id="addSelectedThresholdCheckpointButton" type="button" disabled>Add selected Threshold</button></div>
+              <div class="checkpoint-entry"><label>Checkpoint name<input id="expeditionCheckpointName" type="text" maxlength="100" placeholder="Trail junction"></label><button id="addExpeditionCheckpointButton" type="button" disabled>Add checkpoint at current fix</button></div>
+              <div id="expeditionRouteList" class="ledger-list"></div>
+            </section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">FIELD STATE</span><h2>Run the Expedition</h2></div></div>
+              <div class="expedition-run-actions"><button id="readyExpeditionButton" type="button" disabled>Mark ready</button><button id="startExpeditionButton" type="button" class="primary-button" disabled>Start</button><button id="pauseExpeditionButton" type="button" disabled>Pause</button><button id="completeExpeditionButton" type="button" disabled>Complete</button><button id="abandonExpeditionButton" type="button" class="danger-button" disabled>Abandon</button></div>
+              <p id="expeditionRunHint" class="microcopy">A ready plan can be started from any legal current fix. Walk Mode is recommended once underway.</p>
+              <div id="expeditionChecklist" class="ledger-list"></div>
+            </section>
+          </div>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">EXPEDITION BOOK</span><h2>Plans and completed walks</h2></div><button id="exportExpeditionButton" type="button" disabled>Export selected record</button></div><div id="expeditionList" class="expedition-list"></div></section>
+        </div>
+        <div id="expeditionReplayView" hidden>
+          <section class="instrument-card replay-card"><div class="card-header compact"><div><span class="eyebrow">FIELD RECORDER</span><h2 id="replayTitle">No completed Expedition selected</h2></div><span id="replayClock" class="tag">00:00</span></div>
+            <canvas id="replayCanvas" width="1200" height="620" aria-label="Expedition replay map"></canvas>
+            <div class="replay-controls"><button id="replayPlayPauseButton" type="button" disabled>Play</button><input id="replayScrubber" type="range" min="0" max="1000" value="0" disabled aria-label="Replay position"><label>Speed<select id="replaySpeedSelect"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option><option value="4">4x</option><option value="8">8x</option></select></label></div>
+            <div class="replay-readout"><div><span class="eyebrow">POSITION</span><strong id="replayPosition">No track</strong></div><div><span class="eyebrow">DISTANCE</span><strong id="replayDistance">0 m</strong></div><div><span class="eyebrow">EVENTS</span><strong id="replayEventCount">0</strong></div></div>
+          </section>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">TIMELINE</span><h2>Events up to this point</h2></div></div><div id="replayEventList" class="ledger-list"></div></section>
+        </div>
+      </section>
+
+      <section class="station-panel" data-panel="surveyor" aria-labelledby="surveyorTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 07</div><h1 id="surveyorTitle">Surveyor</h1><p>Author a local region without turning field notes into anonymous map data. Every change keeps its provenance.</p></div><span id="regionPackageBadge" class="tag">LOCAL REGION</span></div>
+
+        <div class="two-column surveyor-grid">
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">REGION PACKAGE</span><h2>Portable local world</h2></div></div>
+            <label>Region name<input id="regionNameInput" type="text" maxlength="120"></label>
+            <label>Author or steward<input id="regionAuthorInput" type="text" maxlength="120"></label>
+            <label>Description<textarea id="regionDescriptionInput" rows="4" maxlength="1600"></textarea></label>
+            <label>Source and license notes<textarea id="regionSourceLicenseInput" rows="3" maxlength="1000" placeholder="Example: OSM-derived geometry, local survey notes, public-domain county atlas reference"></textarea></label>
+            <div class="region-license"><span class="label">Package license</span><strong>GPL-3.0</strong></div>
+            <div class="surveyor-tool"><h3>Local illustration</h3><label>Attribution<input id="regionIllustrationAttributionInput" type="text" maxlength="300" placeholder="Photographer, artist, or source"></label><label>Source license<input id="regionIllustrationLicenseInput" type="text" maxlength="120" placeholder="User supplied"></label><label class="file-button">Add PNG, JPEG, or WebP plate<input id="regionIllustrationFile" type="file" accept="image/png,image/jpeg,image/webp"></label><div id="regionIllustrationList" class="ledger-list"></div></div>
+            <div class="artifact-actions"><button id="saveRegionMetadataButton" type="button">Save metadata</button><button id="exportRegionPackageButton" type="button" class="primary-button">Export .lychgate-region</button></div>
+            <label class="file-button">Import Region Package<input id="regionPackageFile" type="file" accept=".lychgate-region,.json,application/json"></label>
+            <p id="regionPackageStatus" class="microcopy"></p><div id="regionPackageStats" class="tag-cloud"></div>
+          </section>
+
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">FEATURE INSPECTOR</span><h2>Classify survey geometry</h2></div></div>
+            <label>Feature<select id="surveyFeatureSelect"></select></label>
+            <label>Name<input id="surveyFeatureNameInput" type="text" maxlength="120"></label>
+            <label>Kind<select id="surveyFeatureKindSelect"></select></label>
+            <div class="artifact-actions"><button id="updateSurveyFeatureButton" type="button">Apply classification</button><button id="archiveSurveyFeatureButton" type="button" class="danger-button">Archive feature</button></div>
+            <p id="surveyFeatureProvenance" class="microcopy"></p>
+          </section>
+        </div>
+
+        <div class="two-column surveyor-grid">
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ADD TO SURVEY</span><h2>Current-fix authoring</h2></div><span id="surveyorFixBadge" class="tag">NO FIX</span></div>
+            <div class="surveyor-tool"><h3>Point feature</h3><label>Name<input id="surveyPointNameInput" type="text" maxlength="120" placeholder="Public footbridge"></label><label>Kind<select id="surveyPointKindSelect"></select></label><button id="addSurveyPointButton" type="button">Add at current fix</button></div>
+            <div class="surveyor-tool"><h3>Safety exclusion</h3><label>Name<input id="surveyExclusionNameInput" type="text" maxlength="120" placeholder="Posted parcel"></label><label>Kind<select id="surveyExclusionKindSelect"></select></label><label>Radius in meters<input id="surveyExclusionRadiusInput" type="number" min="10" max="2000" value="50"></label><button id="addSurveyExclusionButton" type="button">Add exclusion around current fix</button></div>
+          </section>
+
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">THRESHOLD CURATION</span><h2>Authored and suppressed places</h2></div></div>
+            <p id="surveyorSelectedThreshold" class="microcopy">Select a Threshold in Field first.</p>
+            <button id="toggleThresholdSuppressionButton" type="button">Suppress selected deterministic Threshold</button>
+            <hr>
+            <label>Authored Threshold name<input id="customAnchorNameInput" type="text" maxlength="120" placeholder="The Lower Culvert"></label><label>Kind<select id="customAnchorKindSelect"></select></label><label>Survey note<textarea id="customAnchorNoteInput" rows="3" maxlength="600"></textarea></label><button id="addCustomAnchorButton" type="button">Add Threshold anchor at current fix</button>
+            <div id="customAnchorList" class="ledger-list"></div>
+          </section>
+        </div>
+
+        <div class="two-column surveyor-grid">
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ANNOTATIONS</span><h2>Access, hazards, and observations</h2></div></div><label>Type<select id="regionAnnotationKindSelect"></select></label><label>Note<textarea id="regionAnnotationTextInput" rows="4" maxlength="800"></textarea></label><button id="addRegionAnnotationButton" type="button">Record at current fix</button><div id="regionAnnotationList" class="ledger-list"></div></section>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">SUGGESTED WALKS</span><h2>Package an Expedition route</h2></div></div><p class="microcopy">Capture the currently selected Expedition as a suggested walk. This copies route and safety notes, not its private field-event replay.</p><button id="captureSuggestedWalkButton" type="button">Capture selected Expedition</button><div id="suggestedWalkList" class="ledger-list"></div></section>
+        </div>
+
+        <section class="instrument-card lore-cabinet"><div class="card-header compact"><div><span class="eyebrow">LORE CABINET</span><h2>Regional vocabulary and voice</h2></div><span id="loreTermCount" class="tag">0 TERMS</span></div><p class="microcopy">One entry per line. Non-empty regional tables replace the matching bundled vocabulary for this region. Extra regional terms can color generated references. Generated lore remains fiction, never historical evidence.</p><div id="loreEditorList" class="lore-editor-grid"></div><div class="artifact-actions"><button id="saveLoreCabinetButton" type="button" class="primary-button">Save Lore Cabinet</button><button id="resetLoreCabinetButton" type="button">Reset regional vocabulary</button></div><section class="lore-preview"><div class="eyebrow">DETERMINISTIC PREVIEW</div><h3 id="lorePreviewTitle">Select a Threshold or set a fix</h3><p id="lorePreviewBody" class="microcopy"></p></section></section>
+      </section>
+
+
+      <section class="station-panel" data-panel="scenarios" aria-labelledby="scenariosTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 08</div><h1 id="scenariosTitle">Scenarios</h1><p>Author and play finite field narratives on top of the local LYCHGATE world.</p></div><div class="segmented" role="group" aria-label="Scenario view"><button id="scenarioPlayButton" class="segment active" type="button">Play</button><button id="scenarioAuthorButton" class="segment" type="button">Author</button></div></div>
+
+        <div id="scenarioPlayView">
+          <div class="two-column scenario-grid">
+            <section class="instrument-card scenario-runtime"><div class="card-header compact"><div><span class="eyebrow">ACTIVE SCENARIO</span><h2 id="scenarioActiveTitle">No scenario underway</h2></div><span id="scenarioRuntimeBadge" class="tag">IDLE</span></div><p id="scenarioActiveText" class="scenario-narrative">Choose an authored scenario to begin.</p><p id="scenarioActiveMeta" class="microcopy"></p><div id="scenarioChoiceList" class="scenario-choice-list"></div><div class="artifact-actions"><button id="scenarioContinueButton" type="button" class="primary-button">Continue</button><button id="scenarioTraceSigilButton" type="button">Trace scenario Sigil</button><button id="abandonScenarioButton" type="button" class="danger-button">Abandon scenario</button></div><div id="scenarioProgressList" class="ledger-list"></div></section>
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">AVAILABLE</span><h2>Scenario cabinet</h2></div><span id="scenarioAvailableCount" class="tag">0</span></div><p class="microcopy">Scenario narrative is LYCHGATE fiction, not historical evidence. Location objectives still obey the normal speed and exclusion rules of the Field.</p><div id="scenarioAvailableList" class="scenario-list"></div></section>
+          </div>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">COMPLETION REGISTER</span><h2>Endings reached</h2></div></div><div id="scenarioCompletionList" class="ledger-list"></div></section>
+        </div>
+
+        <div id="scenarioAuthorView" hidden>
+          <div class="two-column scenario-grid">
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">SCENARIO RECORD</span><h2>Metadata and prerequisites</h2></div><span id="scenarioGraphBadge" class="tag">NO SCENARIO</span></div>
+              <label>Scenario<select id="scenarioSelect"></select></label>
+              <label>Title<input id="scenarioTitleInput" type="text" maxlength="160" placeholder="The Last Train to Frostburg"></label>
+              <label>Author<input id="scenarioAuthorInput" type="text" maxlength="120"></label>
+              <label>Summary<textarea id="scenarioSummaryInput" rows="3" maxlength="1800"></textarea></label>
+              <label>Starting clue<textarea id="scenarioStartClueInput" rows="4" maxlength="2400"></textarea></label>
+              <div class="three-column compact-form"><label>Minimum Degree<select id="scenarioMinDegreeInput"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label><label>Order<select id="scenarioFactionInput"><option value="any">Either order</option><option value="kindled">Kindled</option><option value="sextons">Sextons</option></select></label><label>Required Relic ID<input id="scenarioRequiredRelicInput" type="text" maxlength="120" placeholder="Optional"></label></div>
+              <div class="two-column tight"><label>Opens<input id="scenarioStartAtInput" type="datetime-local"></label><label>Closes<input id="scenarioEndAtInput" type="datetime-local"></label></div>
+              <div class="scenario-bounds"><label>Geographic radius (m)<input id="scenarioBoundsRadiusInput" type="number" min="50" max="100000" value="5000"></label><button id="scenarioSetBoundsButton" type="button">Set bounds from current fix</button><span id="scenarioBoundsReadout" class="microcopy">No geographic gate.</span></div>
+              <div class="artifact-actions"><button id="createScenarioButton" type="button" class="primary-button">New scenario</button><button id="saveScenarioButton" type="button">Save scenario</button><button id="exportScenarioButton" type="button">Export .lychgate-scenario</button><button id="archiveScenarioButton" type="button" class="danger-button">Archive scenario</button></div>
+              <label class="file-button">Import Scenario<input id="scenarioImportFile" type="file" accept=".lychgate-scenario,.json,application/json"></label><p id="scenarioGraphStatus" class="microcopy">Create or select a scenario.</p>
+            </section>
+
+            <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">OBJECTIVE GRAPH</span><h2>Node editor</h2></div><span id="scenarioNodeCount" class="tag">0 NODES</span></div>
+              <label>Existing node<select id="scenarioNodeSelect"><option value="">New node</option></select></label>
+              <div class="two-column tight"><label>Node title<input id="scenarioNodeTitleInput" type="text" maxlength="140"></label><label>Type<select id="scenarioNodeTypeInput"><option value="clue">Clue</option><option value="location">Location</option><option value="threshold">Threshold</option><option value="action">Action</option><option value="rite">Rite</option><option value="sigil">Sigil</option><option value="relic">Relic</option><option value="choice">Choice</option><option value="encounter">Encounter</option><option value="ending">Ending</option></select></label></div>
+              <label>Narrative<textarea id="scenarioNodeTextInput" rows="4" maxlength="3000"></textarea></label>
+              <div class="three-column compact-form"><label>Latitude<input id="scenarioNodeLatInput" type="number" step="0.000001"></label><label>Longitude<input id="scenarioNodeLonInput" type="number" step="0.000001"></label><label>Radius (m)<input id="scenarioNodeRadiusInput" type="number" min="5" max="5000" value="40"></label></div>
+              <div class="artifact-actions"><button id="scenarioUseFixButton" type="button">Use current fix</button><button id="scenarioUseThresholdButton" type="button">Use selected Threshold</button></div>
+              <div class="two-column tight"><label>Threshold ID<input id="scenarioNodeThresholdInput" type="text" maxlength="120" placeholder="Optional target"></label><label>Action type<input id="scenarioNodeActionInput" type="text" maxlength="80" placeholder="petition, link, vigil"></label></div>
+              <div class="three-column compact-form"><label>Rite ID<input id="scenarioNodeRiteInput" type="text" maxlength="80" placeholder="witness"></label><label>Relic Threshold ID<input id="scenarioNodeRelicInput" type="text" maxlength="120"></label><label>Sigil minimum<input id="scenarioNodeSigilScoreInput" type="number" min="0" max="100" value="70"></label></div>
+              <div class="three-column compact-form"><label>Time from<input id="scenarioNodeTimeStartInput" type="time"></label><label>Time to<input id="scenarioNodeTimeEndInput" type="time"></label><label>Default next node ID<input id="scenarioNodeNextInput" type="text" maxlength="80"></label></div>
+              <div class="two-column tight"><label>Choice A<label class="nested-input">Label<input id="scenarioChoiceALabelInput" type="text" maxlength="100"></label><label class="nested-input">Next node<input id="scenarioChoiceANextInput" type="text" maxlength="80"></label></label><label>Choice B<label class="nested-input">Label<input id="scenarioChoiceBLabelInput" type="text" maxlength="100"></label><label class="nested-input">Next node<input id="scenarioChoiceBNextInput" type="text" maxlength="80"></label></label></div>
+              <div class="two-column tight"><label>Ending code<input id="scenarioEndingCodeInput" type="text" maxlength="100" placeholder="PASSAGE KEPT"></label><label>Encounter heading<input id="scenarioEncounterTitleInput" type="text" maxlength="140"></label></div>
+              <details class="scenario-sigil-author"><summary>Custom Sigil, optional</summary><label>Sigil name<input id="scenarioCustomSigilNameInput" type="text" maxlength="100"></label><label>Normalized stroke JSON<textarea id="scenarioCustomSigilJsonInput" rows="5" spellcheck="false" placeholder='[[{"x":0.2,"y":0.2},{"x":0.8,"y":0.8}]]'></textarea></label><p class="microcopy">Coordinates are normalized from 0 to 1. When supplied, the scenario uses this mark in the normal memory-tracing instrument.</p></details>
+              <div class="artifact-actions"><button id="addScenarioNodeButton" type="button" class="primary-button">Add node</button><button id="updateScenarioNodeButton" type="button">Update node</button><button id="archiveScenarioNodeButton" type="button" class="danger-button">Archive node</button></div>
+              <div id="scenarioNodeList" class="scenario-node-list"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="station-panel" data-panel="cabinet" aria-labelledby="cabinetTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 09</div><h1 id="cabinetTitle">Cabinet</h1><p>Bring in surveys and tracks. Carry the complete ledger out.</p></div></div>
+        <div class="two-column">
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">SAVE</span><h2>Complete state</h2></div></div><div class="stacked-actions"><button id="exportSaveButton" type="button" class="primary-button">Export LYCHGATE JSON</button><label class="file-button">Import LYCHGATE JSON<input id="importSaveFile" type="file" accept="application/json,.json"></label><button id="archiveSessionButton" type="button">Archive current session</button><button id="freshStartButton" type="button" class="danger-button">Fresh start</button></div><p class="microcopy">Fresh start archives the current save into an exportable recovery record before resetting local play.</p></section>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">REGION</span><h2>Local survey geometry</h2></div></div><label class="file-button">Import GeoJSON, GPX, or OSM XML<input id="geometryFile" type="file" accept=".geojson,.json,.gpx,.osm,.xml,application/geo+json,application/gpx+xml,text/xml"></label><button id="loadSampleRegionButton" type="button">Restore bundled sample region</button><button id="archiveGeometryButton" type="button">Archive current geometry</button><p id="geometryStatus" class="microcopy"></p><div id="geometryStats" class="tag-cloud"></div></section>
+          <section class="instrument-card identity-workbench"><div class="card-header compact"><div><span class="eyebrow">PLAYER IDENTITY</span><h2>Local signing key</h2></div><span id="identityStatusBadge" class="tag">CHECKING</span></div><p class="microcopy">LYCHGATE generates an ECDSA P-256 signing identity locally. The private key never appears in Passage Stones. A valid signature proves possession of the matching private key, not a real-world name.</p><div class="identity-card"><div><span class="label">Call sign</span><strong id="identityCallSign">Walker</strong></div><div><span class="label">Fingerprint</span><code id="identityFingerprint">Unavailable</code></div><div><span class="label">Key</span><span id="identityKeyId">Unavailable</span></div><div><span class="label">Retired keys</span><span id="identityRetiredCount">0</span></div></div><label>Call sign<input id="identityCallSignInput" type="text" maxlength="80" autocomplete="off" placeholder="Walker"></label><div class="artifact-actions"><button id="saveCallSignButton" type="button">Save call sign</button><button id="rotateIdentityButton" type="button" class="danger-button">Rotate signing key</button><button id="buildIdentityCardButton" type="button">Prepare identity card</button></div><hr><label>Backup passphrase<input id="identityBackupPassphrase" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label><div class="artifact-actions"><button id="exportIdentityBackupButton" type="button">Export encrypted identity backup</button><label class="file-button">Import encrypted backup<input id="identityBackupFile" type="file" accept=".lychgate-identity,.txt,text/plain"></label></div><p id="identityStatusText" class="microcopy"></p></section>
+          <section class="instrument-card artifact-workbench"><div class="card-header compact"><div><span class="eyebrow">PASSAGE STONE 2.0</span><h2>Artifact exchange</h2></div><span id="worldSaltIdBadge" class="tag">WORLD</span></div><p class="microcopy">New artifacts are signed by the local ECDSA identity when WebCrypto is available. Older local-integrity stones remain readable and are labeled as unverified identity evidence.</p><div class="artifact-controls"><label>Exchange item<select id="exchangeArtifactType"><option value="threshold">Selected Threshold</option><option value="identity">Identity card</option><option value="rite">Latest Rite witness</option><option value="territory">Territory witness</option><option value="report">Field report</option><option value="challenge">Challenge note</option></select></label><label>Encoding<select id="stoneEncodingSelect"><option value="human">Human-readable</option><option value="compact">Compact</option></select></label><button id="exportStoneButton" type="button" class="primary-button">Build exchange artifact</button><button id="exportStoneBatchButton" type="button">Build worked-Threshold batch</button></div><label id="challengeNoteLabel" hidden>Challenge or rendezvous note<textarea id="challengeNoteInput" rows="3" maxlength="600" placeholder="Short field challenge or meeting note"></textarea></label><label>Prepared artifact<textarea id="artifactOutputText" rows="9" spellcheck="false" readonly placeholder="Build a Passage Stone to prepare an exchange artifact."></textarea></label><div class="artifact-actions"><button id="copyArtifactButton" type="button" disabled>Copy</button><button id="downloadArtifactButton" type="button" disabled>Download .lychgate-stone</button><button id="qrArtifactButton" type="button" disabled>Render QR</button><button id="animateQrButton" type="button" disabled>Animated QR</button></div><div id="artifactQrWrap" class="artifact-qr" hidden><canvas id="artifactQrCanvas" width="420" height="420" aria-label="Passage Stone QR code"></canvas><div><p id="artifactQrStatus" class="microcopy"></p><div class="artifact-actions"><button id="qrPrevFrameButton" type="button" hidden>Previous frame</button><button id="qrNextFrameButton" type="button" hidden>Next frame</button><button id="downloadQrButton" type="button">Save QR PNG</button></div></div></div><p id="artifactOutputStatus" class="microcopy"></p><hr><div class="card-header compact"><div><span class="eyebrow">FIELD RECEIVE</span><h3>Scan or paste</h3></div><span id="qrReceiveBadge" class="tag">IDLE</span></div><div class="artifact-actions"><button id="startQrScanButton" type="button">Start camera scanner</button><button id="stopQrScanButton" type="button" disabled>Stop camera</button><label class="file-button">Scan QR image<input id="qrImageFile" type="file" accept="image/*"></label></div><video id="qrScanVideo" class="qr-video" playsinline muted hidden></video><p id="qrScanStatus" class="microcopy">Camera scanning uses the browser BarcodeDetector when available. Paste and file import always remain available.</p><label>Paste artifact<textarea id="stoneImportText" rows="8" spellcheck="false" placeholder="Paste LYCHGATE-PASSAGE-STONE-2, LG2:, a Passage batch, a QR frame, or a legacy v1 stone"></textarea></label><label class="file-button">Load artifact file<input id="stoneImportFile" type="file" accept=".lychgate-stone,.lychgate-stones,.txt,text/plain"></label><div class="artifact-controls"><label>Conflict policy<select id="stoneConflictPolicy"><option value="timestamp">Newest timestamp wins</option><option value="keep-local">Keep local state</option><option value="accept-incoming">Accept incoming state</option></select></label><label class="toggle-row"><input id="stoneAllowWorldMismatch" type="checkbox"> Allow different World Salt</label></div><div class="artifact-actions"><button id="importStoneButton" type="button">Preview import</button><button id="commitStoneImportButton" type="button" class="primary-button" disabled>Commit reviewed import</button></div><p id="stoneStatus" class="microcopy"></p><div id="stonePreview" class="artifact-preview"></div></section>
+          <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">WORLD SALT</span><h2>Shared deterministic world</h2></div></div><label>World salt<input id="worldSaltInput" type="text" maxlength="80" autocomplete="off"></label><button id="applyWorldSaltButton" type="button">Apply salt</button><p class="microcopy">Players using the same salt derive the same thresholds from the same coordinates.</p></section>
+        </div>
+        <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">REGISTRY</span><h2>Encountered identities</h2></div><span id="registryCount" class="tag">0</span></div><p class="microcopy">Registry entries are created from artifacts you actually encounter. Trust is local to this save and is never published automatically.</p><div id="registryList" class="registry-list"></div></section>
+        <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ARTIFACT REGISTER</span><h2>Passage Stone traffic</h2></div><span id="artifactRegisterCount" class="tag">0</span></div><div class="two-column artifact-register-grid"><div><h3>Incoming</h3><div id="artifactIncomingList" class="ledger-list"></div></div><div><h3>Outgoing</h3><div id="artifactOutgoingList" class="ledger-list"></div></div></div></section>
+
+        <section class="instrument-card relay-workbench"><div class="card-header compact"><div><span class="eyebrow">PEER RELAY</span><h2>Optional transport</h2></div><span id="relayStatusBadge" class="tag">DISCONNECTED</span></div><p class="microcopy">Peer relay only transports Passage Stone text. Every received artifact still goes through the normal preview, signature, World Salt, conflict, and blocked-identity checks. Core play never depends on a relay.</p>
+          <div class="relay-grid"><div><label>Transport<select id="relayTransportSelect"><option value="broadcast">Local BroadcastChannel</option><option value="webrtc">Direct WebRTC</option><option value="websocket">WebSocket companion</option><option value="serial">Serial text bridge</option></select></label><label id="relayChannelLabel">Channel<input id="relayChannelInput" type="text" maxlength="80" value="LYCHGATE-FIELD"></label><label id="relayWsLabel" hidden>WebSocket endpoint<input id="relayWsInput" type="text" value="ws://127.0.0.1:8787"></label><div class="artifact-actions"><button id="relayConnectButton" type="button">Connect</button><button id="relayDisconnectButton" type="button" disabled>Disconnect</button><button id="relaySendButton" type="button" class="primary-button" disabled>Send prepared artifact</button></div><p id="relayStatusText" class="microcopy">No relay is connected.</p></div>
+          <div id="relayWebRtcBox" hidden><div class="card-header compact"><div><span class="eyebrow">MANUAL SIGNALING</span><h3>Direct WebRTC</h3></div></div><div class="artifact-actions"><button id="relayCreateOfferButton" type="button">Create offer</button><button id="relayApplySignalButton" type="button">Apply remote offer / answer</button></div><label>Local signal<textarea id="relayLocalSignal" rows="6" spellcheck="false" readonly placeholder="Offer or answer appears here for copy to the other player."></textarea></label><label>Remote signal<textarea id="relayRemoteSignal" rows="6" spellcheck="false" placeholder="Paste the other player's offer or answer here."></textarea></label></div></div>
+          <div class="two-column artifact-register-grid"><div><h3>Received</h3><div id="relayIncomingList" class="ledger-list"></div></div><div><h3>Sent</h3><div id="relayOutgoingList" class="ledger-list"></div></div></div>
+        </section>
+        <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ARCHIVE</span><h2>Soft-deleted records</h2></div></div><div id="archiveList" class="ledger-list"></div></section>
+      </section>
+
+      <section class="station-panel" data-panel="about" aria-labelledby="aboutTitle" hidden>
+        <div class="station-heading"><div><div class="eyebrow">STATION 10</div><h1 id="aboutTitle">About</h1><p>A local-first supernatural field practice.</p></div></div>
+        <div class="two-column">
+          <section class="instrument-card prose-card"><h2>LYCHGATE <span class="muted">v<span data-app-version>5.3.0</span></span></h2><p>LYCHGATE turns walking, local survey geometry, deterministic world generation, generated field tradition, Relics, Ley lines, persistent Shrouds, planned Expeditions, local replay records, portable Region Packages, Surveyor authoring, regional Lore Cabinets, finite authored Scenarios, and asynchronous Passage Stone artifacts into a private field game. The Kindled and the Sextons disagree about mercy. Neither order is written as the villain. Generated lore and encounter text are game fiction and are not historical evidence about real places.</p><h3>Privacy</h3><p><strong>Location data never leaves this device unless you explicitly place location-bearing data into an artifact you choose to exchange.</strong> LYCHGATE has no required server, account, analytics, tracking pixel, tile service, or remote font. Cryptographic identity keys, Expedition tracks, replay records, Registry trust, and relay logs are generated and stored locally. Optional relay transports move only artifacts the player chooses to send. Region Packages are exported only when the player chooses to create one.</p><h3>License</h3><p>GPL-3.0</p><h3>Asset budget</h3><p>Bundled art remains hand-authored SVG and CSS. Audio is synthesized at runtime with WebAudio. User-added field photographs are save data, not shipped assets.</p><h3>Vendored code</h3><p>The local QR renderer uses QRCode for JavaScript by Kazuhiko Arase, with modifications distributed through qrcode-terminal. License notices are included in the vendor folder. No vendored code makes network requests.</p></section>
+          <section class="instrument-card prose-card"><h2>Safety code</h2><ul><li>Stay on public, legal, safely accessible ground.</li><li>Never enter active rail rights of way, highways, private property, posted land, closed areas, or unsafe terrain for the game.</li><li>Do not interact while moving faster than the game permits.</li><li>Treat cemeteries and places of worship as places deserving quiet and respect.</li><li>Stop play when weather, traffic, visibility, fatigue, or local conditions make continuing unwise.</li><li>The game never outranks a sign, fence, law, landowner, or common sense.</li></ul></section>
+        </div>
+        <section class="instrument-card"><div class="card-header compact"><div><span class="eyebrow">ENGINEERING</span><h2>Self-Test</h2></div><button id="selfTestButton" type="button" class="primary-button">Run Self-Test</button></div><div id="selfTestSummary" class="test-summary">Not run.</div><div id="selfTestResults" class="test-results"></div><label class="debug-toggle"><input id="debugToggle" type="checkbox"> Enable debug logging</label></section>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="firstRunDialog" class="modal-dialog"><form method="dialog"><div class="eyebrow">FIRST OPEN</div><h2>Before the first walk</h2><p>LYCHGATE rewards attention to place, never trespass or risk. Work thresholds only from public, legal, safely accessible ground. Do not enter rail rights of way, highways, private property, posted land, or closed areas. Be quiet and respectful around cemeteries and places of worship.</p><label class="consent-row"><input id="safetyConsent" type="checkbox"> I will treat the safety code as part of the rules.</label><button id="acceptSafetyButton" type="button" class="primary-button" disabled>Enter the field</button></form></dialog>
+
+  <dialog id="sigilDialog" class="sigil-dialog">
+    <div class="sigil-topline"><div><span id="sigilFamily" class="eyebrow">SIGIL TRACING</span><h2 id="sigilName">The Gate</h2><p id="sigilDifficulty" class="microcopy"></p></div><button id="closeSigilButton" type="button" aria-label="Close sigil tracing">×</button></div>
+    <div class="sigil-stage"><canvas id="sigilCanvas" width="720" height="720" aria-label="Sigil tracing canvas"></canvas><div id="sigilInstruction" class="sigil-instruction">Watch.</div></div>
+    <div class="sigil-breakdown" id="sigilBreakdown" hidden></div>
+    <div class="sigil-actions"><span id="sigilScore">Score pending</span><button id="sigilClearButton" type="button">Clear trace</button><button id="sigilReplayButton" type="button">Replay mark</button><button id="sigilSubmitButton" type="button" class="primary-button">Judge trace</button></div>
+  </dialog>
+
+  <section id="printSheet" class="print-sheet" aria-hidden="true"><header><div id="printKicker" class="eyebrow">LYCHGATE FIELD REPORT</div><h1 id="printTitle">Session Ledger</h1><p id="printReportMeta"></p></header><div id="printReportBody"></div><footer>LYCHGATE v5.3.0 · Local-first field practice · GPL-3.0</footer></section>
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="data/names.js"></script>
+  <script src="data/lore.js"></script>
+  <script src="data/sigils.js"></script>
+  <script src="data/sample-region.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/region.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/positions.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
+  <script src="vendor/qrcode.js"></script>
+  <script src="js/identity.js"></script>
+  <script src="js/artifacts.js"></script>
+  <script src="js/expeditions.js"></script>
+  <script src="js/scenarios.js"></script>
+  <script src="js/relay.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/tests.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
